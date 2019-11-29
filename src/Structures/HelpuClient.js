@@ -81,7 +81,6 @@ class HelpuClient extends Client {
             const cooltimer = this.cooldown;
             const cooldownCheckPoint = new Set();
             
-            // Chequea si el comando está en cooldown por parte del uso del autor.
             if (cooldownCheckPoint.has(message.author.id) && cooldownCheckPoint.has(cmd)){
                 message.channel.send("¡Espera un poco antes de volver a usar este comando!").then(m => {
                 setTimeout(() => {
@@ -93,11 +92,9 @@ class HelpuClient extends Client {
             try {
                 if (!cmd) return;
                 
-                // Añade Set() a las propiedades del cooldown.
                 cooldownCheckPoint.add(message.author.id)
                 cooldownCheckPoint.add(cmd)
                 setTimeout(() => {
-                    // Luego del cooldown definido borra los Set()
                     cooldownCheckPoint.delete(message.author.id)
                     cooldownCheckPoint.delete(cmd)
                 }, cooltimer)
