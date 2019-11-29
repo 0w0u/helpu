@@ -29,12 +29,13 @@ class Commands extends Collection {
                 cmds.forEach((cmd) => {
                     if (!cmd.endsWith(".js")) return;
                     let cmdClass = require(directory + "/" + category + "/" + cmd);
+                    if (!cmdClass) return;
                     this.set(cmd.split(".")[0], new cmdClass(this.client));
                 });
             });
         } catch (e) {
-            let helpuError = new Error("\u001b[31mHubo un error al cargar un comando, por favor verifica que estén bien creados.\nReferencia: " + e + "\u001b[0m");
-            helpuError.name = "\u001b[1m\u001b[36mHelpuError:\u001b[0m\n";
+            let helpuError = new Error("Hubo un error al cargar un comando, por favor verifica que estén bien creados.\nReferencia: " + e + "\u001b[0m");
+            helpuError.name = "\u001b[1m\u001b[36mHelpuError\u001b[0m";
             throw helpuError;
         }
     };
