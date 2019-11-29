@@ -75,15 +75,15 @@ class HelpuClient extends Client {
                 .split(/ +/g);
             const command = args.shift().toLowerCase();
             const cmd = this.commands.find(c => c.name === command || c.aliases.includes(command));
-            const cooltimer = this.cooldown ? this.cooldown : 10;
+            const cooltimer = this.cooldown ? this.cooldown : 5000;
             const cooldown = new Set();
             try {
                 if (!cmd) return;
                 cooldown.add(message.author.id)
-                cooldown.add(cmd)
+                cooldown.add(cmd.name)
                 setTimeout(() => {
                     cooldown.delete(message.author.id)
-                    cooldown.delete(cmd)
+                    cooldown.delete(cmd.name)
                 }, cooltimer)
         
                 if (cmd.ownerOnly === true && !this.botOwners.includes(message.author.id)) {
@@ -92,7 +92,7 @@ class HelpuClient extends Client {
                     return message.channel.send(this.messages.serverOnly ? this.messages.serverOnly : '¡Este comando solo se puede usar en sevidores!')
                 } else if (cmd.nsfwOnly === true && !message.channel.nsfw) {
                     return message.channel.send(this.messages.nsfwOnly ? this.messages.nsfwOnly : '¡Este comando solo se puede usar en canales NSFW!')
-                } else if (cmd.cooldown !== null && cooldown.has(message.author.id) && cooldown.has(cmd)){
+                } else if (cmd.cooldown !== null && cooldown.has(message.author.id) && cooldown.has(cmd.name)){
                     return message.channel.send(this.messages.cooldown ? this.messages.cooldown : '¡Espera un poco antes de volver a usar este comando!').then(m => {
                         m.delete(3500);
                       });
