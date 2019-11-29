@@ -64,6 +64,7 @@ class HelpuClient extends Client {
          * @property {?string} ownerOnly
          * @property {?string} serverOnly
          * @property {?string} nsfwOnly
+         * @property {?string} cooldown
          */
         this.messages = options.messages;
         /**
