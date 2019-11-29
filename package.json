@@ -1,6 +1,6 @@
 {
   "name": "helpu",
-  "version": "1.0.1",
+  "version": "1.0.1.01",
   "description": "Un npm para facilitar la creación de bots de Discord usando discord.js",
   "main": "src/index.js",
   "author": "wwmon",

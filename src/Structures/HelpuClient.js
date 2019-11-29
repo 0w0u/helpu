@@ -73,25 +73,20 @@ class HelpuClient extends Client {
                 .split(/ +/g);
             const command = args.shift().toLowerCase();
             const cmd = this.commands.find(c => c.name === command || c.aliases.includes(command));
-            /**
-             * Verificando prohibiciones
-             */
-            if (cmd.ownerOnly === true && !this.botOwners.includes(message.author.id)) {
-                return message.channel.send(this.messages.ownerOnly ? this.messages.ownerOnly : '¡Este comando es solo para dueños!')
-            } else
-                if (cmd.serverOnly === true && !message.guild) {
-                    return message.channel.send(this.messages.serverOnly ? this.messages.serverOnly : '¡Este comando solo se puede usar en sevidores!')
-                } else
-                    if (cmd.nsfwOnly === true && !message.channel.nsfw) {
-                        return message.channel.send(this.messages.nsfwOnly ? this.messages.nsfwOnly : '¡Este comando solo se puede usar en canales NSFW!')
-                    }
             try {
                 if (!cmd) return;
+                if (cmd.ownerOnly === true && !this.botOwners.includes(message.author.id)) {
+                    return message.channel.send(this.messages.ownerOnly ? this.messages.ownerOnly : '¡Este comando es solo para dueños!')
+                } else if (cmd.serverOnly === true && !message.guild) {
+                    return message.channel.send(this.messages.serverOnly ? this.messages.serverOnly : '¡Este comando solo se puede usar en sevidores!')
+                } else if (cmd.nsfwOnly === true && !message.channel.nsfw) {
+                    return message.channel.send(this.messages.nsfwOnly ? this.messages.nsfwOnly : '¡Este comando solo se puede usar en canales NSFW!')
+                }
                 cmd.run(message, args);
             } catch (e) {
                 let errChannel = this.channels.get(this.errorsChannel);
                 if (errChannel) errChannel.send("Nuevo error");
-                throw new Error(`¡Ha ocurrido un error al ejecutar un comando!\nError: ${e}`);
+                throw new Error(`¡Ha ocurrido un error al ejecutar un comando!\nError: ${e.toSring()}`);
             }
         });
     }
