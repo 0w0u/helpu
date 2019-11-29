@@ -29,6 +29,11 @@ class HelpuClient extends Client {
          */
         this.prefix = options.prefix;
         /**
+         * Tiempo de espera para el próximo uso del comando.
+         * @type {number}
+         */
+        this.cooldown = options.cooldown; 
+        /**
          * Eventos del bot.
          * @type {Events}
          */
@@ -73,8 +78,30 @@ class HelpuClient extends Client {
                 .split(/ +/g);
             const command = args.shift().toLowerCase();
             const cmd = this.commands.find(c => c.name === command || c.aliases.includes(command));
+            const cooltimer = this.cooldown;
+            const cooldownCheckPoint = new Set();
+            
+            // Chequea si el comando está en cooldown por parte del uso del autor.
+            if (cooldownCheckPoint.has(message.author.id) && cooldownCheckPoint.has(cmd)){
+                message.channel.send("¡Espera un poco antes de volver a usar este comando!").then(m => {
+                setTimeout(() => {
+                    m.delete()
+                }, 1000)
+            })
+                return;
+            }
             try {
                 if (!cmd) return;
+                
+                // Añade Set() a las propiedades del cooldown.
+                cooldownCheckPoint.add(message.author.id)
+                cooldownCheckPoint.add(cmd)
+                setTimeout(() => {
+                    // Luego del cooldown definido borra los Set()
+                    cooldownCheckPoint.delete(message.author.id)
+                    cooldownCheckPoint.delete(cmd)
+                }, cooltimer)
+        
                 if (cmd.ownerOnly === true && !this.botOwners.includes(message.author.id)) {
                     return message.channel.send(this.messages.ownerOnly ? this.messages.ownerOnly : '¡Este comando es solo para dueños!')
                 } else if (cmd.serverOnly === true && !message.guild) {
