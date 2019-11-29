@@ -79,24 +79,21 @@ class HelpuClient extends Client {
             const command = args.shift().toLowerCase();
             const cmd = this.commands.find(c => c.name === command || c.aliases.includes(command));
             const cooltimer = this.cooldown;
-            const cooldownCheckPoint = new Set();
+            const cooldown = new Set();
             
-            if (cooldownCheckPoint.has(message.author.id) && cooldownCheckPoint.has(cmd)){
-                message.channel.send("¡Espera un poco antes de volver a usar este comando!").then(m => {
-                setTimeout(() => {
-                    m.delete()
-                }, 1000)
+            if (cooldown.has(message.author.id) && cooldown.has(cmd)){
+                return message.channel.send("¡Espera un poco antes de volver a usar este comando!").then(m => {
+                    m.delete(3500)
             })
-                return;
             }
             try {
                 if (!cmd) return;
                 
-                cooldownCheckPoint.add(message.author.id)
-                cooldownCheckPoint.add(cmd)
+                cooldown.add(message.author.id)
+                cooldown.add(cmd)
                 setTimeout(() => {
-                    cooldownCheckPoint.delete(message.author.id)
-                    cooldownCheckPoint.delete(cmd)
+                    cooldown.delete(message.author.id)
+                    cooldown.delete(cmd)
                 }, cooltimer)
         
                 if (cmd.ownerOnly === true && !this.botOwners.includes(message.author.id)) {
