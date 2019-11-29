@@ -64,6 +64,11 @@ class HelpuClient extends Client {
          */
         this.messages = options.messages;
         /**
+         * Creando el cooldown
+         */
+        this.cooldown = new Set();
+        const cooltimer = this.cooldown ? this.cooldown : 0;
+        /**
          * Administrador de comandos
          * @listens message
          */
@@ -75,16 +80,10 @@ class HelpuClient extends Client {
                 .split(/ +/g);
             const command = args.shift().toLowerCase();
             const cmd = this.commands.find(c => c.name === command || c.aliases.includes(command));
-            const cooltimer = this.cooldown ? this.cooldown : 5000;
-            const cooldown = new Set();
             try {
                 if (!cmd) return;
-                cooldown.add(message.author.id)
-                cooldown.add(cmd.name)
-                setTimeout(() => {
-                    cooldown.delete(message.author.id)
-                    cooldown.delete(cmd.name)
-                }, cooltimer)
+                this.cooldown.add([message.author.id, cmd.name])
+                setTimeout(() => this.cooldown.delete([message.author.id, cmd.name]), cmd.cooldown ? cmd.cooldown : 5000)
         
                 if (cmd.ownerOnly === true && !this.botOwners.includes(message.author.id)) {
                     return message.channel.send(this.messages.ownerOnly ? this.messages.ownerOnly : '¡Este comando es solo para dueños!')
@@ -92,7 +91,7 @@ class HelpuClient extends Client {
                     return message.channel.send(this.messages.serverOnly ? this.messages.serverOnly : '¡Este comando solo se puede usar en sevidores!')
                 } else if (cmd.nsfwOnly === true && !message.channel.nsfw) {
                     return message.channel.send(this.messages.nsfwOnly ? this.messages.nsfwOnly : '¡Este comando solo se puede usar en canales NSFW!')
-                } else if (cmd.cooldown !== null && cooldown.has(message.author.id) && cooldown.has(cmd.name)){
+                } else if (cmd.cooldown !== null && this.cooldown.has([message.author.id, cmd.name])) {
                     return message.channel.send(this.messages.cooldown ? this.messages.cooldown : '¡Espera un poco antes de volver a usar este comando!').then(m => {
                         m.delete(3500);
                       });
