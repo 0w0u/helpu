@@ -20,6 +20,7 @@ class HelpuClient extends Client {
      * @param {?string} options.messages.ownerOnly Mensaje predeterminado de incumplimiento 'ownerOnly'.
      * @param {?string} options.messages.serverOnly Mensaje predeterminado de incumplimiento 'serverOnly'.
      * @param {?string} options.messages.nsfwOnly Mensaje predeterminado de incumplimiento 'nsfwOnly'.
+     * @param {?string} options.messages.cooldown Mensaje predeterminado de incumplimiento del cooldown.
      */
     constructor(options) {
         super(options);
