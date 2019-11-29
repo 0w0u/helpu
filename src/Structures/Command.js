@@ -52,7 +52,7 @@ class Command {
          * Tiempo de espera para su otro uso.
          * @type {number}
          */
-        this.cooldown = configuration.cooldown;
+        this.cooldown = configuration.cooldown; 
         /**
          * Comando que solo puede ser utilizado por dueños del bot.
          * @type {boolean}
