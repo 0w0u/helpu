@@ -30,11 +30,6 @@ class HelpuClient extends Client {
          */
         this.prefix = options.prefix;
         /**
-         * Tiempo de espera para el próximo uso del comando.
-         * @type {number}
-         */
-        this.cooldown = options.cooldown; 
-        /**
          * Eventos del bot.
          * @type {Events}
          */
