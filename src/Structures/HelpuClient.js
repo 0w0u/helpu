@@ -82,20 +82,8 @@ class HelpuClient extends Client {
             const cooltimer = this.cooldown;
             const cooldown = new Set();
             
-            if (cooldown.has(message.author.id) && cooldown.has(cmd)){
-                return message.channel.send("¡Espera un poco antes de volver a usar este comando!").then(m => {
-                    m.delete(3500)
-            })
-            }
             try {
                 if (!cmd) return;
-                
-                cooldown.add(message.author.id)
-                cooldown.add(cmd)
-                setTimeout(() => {
-                    cooldown.delete(message.author.id)
-                    cooldown.delete(cmd)
-                }, cooltimer)
         
                 if (cmd.ownerOnly === true && !this.botOwners.includes(message.author.id)) {
                     return message.channel.send(this.messages.ownerOnly ? this.messages.ownerOnly : '¡Este comando es solo para dueños!')
@@ -103,7 +91,17 @@ class HelpuClient extends Client {
                     return message.channel.send(this.messages.serverOnly ? this.messages.serverOnly : '¡Este comando solo se puede usar en sevidores!')
                 } else if (cmd.nsfwOnly === true && !message.channel.nsfw) {
                     return message.channel.send(this.messages.nsfwOnly ? this.messages.nsfwOnly : '¡Este comando solo se puede usar en canales NSFW!')
+                } else if (cmd.cooldown !== null && cooldown.has(message.author.id) && cooldown.has(cmd)){
+                    return message.channel.send(this.messages.cooldown ? this.messages.cooldown : '¡Espera un poco antes de volver a usar este comando!').then(m => {
+                        m.delete(3500);
+                      });
                 }
+                cooldown.add(message.author.id)
+                cooldown.add(cmd)
+                setTimeout(() => {
+                    cooldown.delete(message.author.id)
+                    cooldown.delete(cmd)
+                }, cooltimer)
                 cmd.run(message, args);
             } catch (e) {
                 let errChannel = this.channels.get(this.errorsChannel);
