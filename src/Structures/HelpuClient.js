@@ -66,7 +66,7 @@ class HelpuClient extends Client {
         /**
          * Creando el cooldown
          */
-        this.cooldown = new Set();
+        this.cooldowns = new Map();
         /**
          * Administrador de comandos
          * @listens message
@@ -81,9 +81,13 @@ class HelpuClient extends Client {
             const cmd = this.commands.find(c => c.name === command || c.aliases.includes(command));
             try {
                 if (!cmd) return;
-                const cooltimer = cmd.cooldown ? cmd.cooldown : 0;
-                this.cooldown.add([message.author.id, cmd.name])
-                setTimeout(() => this.cooldown.delete([message.author.id, cmd.name]), cooltimer)
+                let cooldownEntry = message.author.id + cmd.name;
+                if (this.cooldowns.has(cooldownEntry)) {
+                    return message.channel.send(this.messages.cooldown ? this.messages.cooldown : '¡Debes esperar para volver a usar el comando nuevamente!');
+                }
+                const cooltimer = Number(cmd.cooldown) ? cmd.cooldown : 0;
+                this.cooldowns.set(cooldownEntry, true);
+                setTimeout(() => this.cooldowns.delete(cooldownEntry), cooltimer);
         
                 if (cmd.ownerOnly === true && !this.botOwners.includes(message.author.id)) {
                     return message.channel.send(this.messages.ownerOnly ? this.messages.ownerOnly : '¡Este comando es solo para dueños!')
