@@ -75,11 +75,16 @@ class HelpuClient extends Client {
                 .split(/ +/g);
             const command = args.shift().toLowerCase();
             const cmd = this.commands.find(c => c.name === command || c.aliases.includes(command));
-            const cooltimer = this.cooldown;
+            const cooltimer = this.cooldown ? this.cooldown : 10;
             const cooldown = new Set();
-            
             try {
                 if (!cmd) return;
+                cooldown.add(message.author.id)
+                cooldown.add(cmd)
+                setTimeout(() => {
+                    cooldown.delete(message.author.id)
+                    cooldown.delete(cmd)
+                }, cooltimer)
         
                 if (cmd.ownerOnly === true && !this.botOwners.includes(message.author.id)) {
                     return message.channel.send(this.messages.ownerOnly ? this.messages.ownerOnly : '¡Este comando es solo para dueños!')
@@ -92,12 +97,6 @@ class HelpuClient extends Client {
                         m.delete(3500);
                       });
                 }
-                cooldown.add(message.author.id)
-                cooldown.add(cmd)
-                setTimeout(() => {
-                    cooldown.delete(message.author.id)
-                    cooldown.delete(cmd)
-                }, cooltimer)
                 cmd.run(message, args);
             } catch (e) {
                 let errChannel = this.channels.get(this.errorsChannel);
