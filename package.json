@@ -1,10 +1,19 @@
 {
-  "name": "discord-helpu",
-  "version": "1.0.0",
+  "name": "helpu",
+  "version": "1.0.1",
   "description": "Un npm para facilitar la creación de bots de Discord usando discord.js",
   "main": "src/index.js",
-  "scripts": {
-    "test": "node example/index.js"
+  "author": "wwmon",
+  "collaborators": [
+    "drylotrans"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wwmon/helpu.git"
+  },
+  "dependencies": {
+    "discord.js": "^11.5.1"
   },
   "keywords": [
     "discord.js",
@@ -12,13 +21,5 @@
     "discord api",
     "api",
     "wrapper"
-  ],
-  "author": "wwmon",
-  "contributors": [
-    "drylotrans"
-  ],
-  "license": "MIT",
-  "dependencies": {
-    "discord.js": "^11.5.1"
-  }
+  ]
 }

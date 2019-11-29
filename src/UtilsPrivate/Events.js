@@ -11,22 +11,28 @@ class Events {
      */
     constructor(client) {
         this.client = client;
-    } 
-    
+    }
+
     /**
      * Se cargan los eventos de un directorio específico
      * @param {string} directory Directorio de los eventos
      */
     async load(directory) {
-        if (!fs.existsSync(directory)) fs.mkdirSync(directory);
-        let eventsFiles = fs.readdirSync(directory);
-        eventsFiles.forEach((ev) => {
-            let eventName = ev.split('.')[0];
-            let eventClass = require(directory + '/' + ev);
-            let event = new eventClass(this.client);
-            this.client.on(eventName, (...args) => event.run(...args));
-        });
-    }
-}
+        try {
+            if (!fs.existsSync(directory)) fs.mkdirSync(directory);
+            let eventsFiles = fs.readdirSync(directory);
+            eventsFiles.forEach((ev) => {
+                let eventName = ev.split('.')[0];
+                let eventClass = require(directory + '/' + ev);
+                let event = new eventClass(this.client);
+                this.client.on(eventName, (...args) => event.run(...args));
+            });
+        } catch (e) {
+            let helpuError = new Error("\u001b[31mHubo un error al cargar un comando, por favor verifica que estén bien creados.\nReferencia: " + e + "\u001b[0m");
+            helpuError.name = "\u001b[1m\u001b[36mHelpuError:\u001b[0m\n";
+            throw helpuError;
+        }
+    };
+};
 
 module.exports = Events;
